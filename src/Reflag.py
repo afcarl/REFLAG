@@ -95,11 +95,3 @@ class REFLAG(object):
             fname = "./embeddings/" + self.dataset + "_reflag_label_" + str(int(tr * 100)) + ".emb"
             reflag_model = self._train_word2Vec(walks, dsize, wsize, 8, output, fname)
         return reflag_model
-            # if evaluate == True:
-            #     eval = Evaluation.Evaluation(data)
-            #     outDf = eval.evaluate_tr(reflag_model, tr)
-            #     outDf['label'] = 'label_' + (str(int(tr * 100)))
-            #     alloutput = alloutput.append(outDf)
-            # print alloutput
-            # alloutput.to_csv(data + "_labelled_data_results.csv", index=False)
-

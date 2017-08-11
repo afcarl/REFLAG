@@ -38,6 +38,4 @@ if __name__ == "__main__":
     reflag_obj = REFLAG(args.data)
     model = reflag_obj.train_REFLAG(args.data, args.label, args.num_walks, args.walk_length, args.dimension, args.window_size, args.output)
     c_eval = Classification(args.data, multilabel=False)
-    if args.label == True:
-        for tr in [0.1, 0.3, 0.5]:
-            c_eval.evaluate(model, True)
+    c_eval.evaluate(model, True)

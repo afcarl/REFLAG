@@ -143,8 +143,6 @@ class Classification:
                 model = "./embeddings/" + self.dataset + "_reflag_label_" + str(int(tr * 100)) + ".emb"
                 if isinstance(model, str):
                     embedding = self.get_embeddingDF(model)
-                else:
-                    embedding = self.get_embeddingDF(model)
 
             reflagAcc, reflagF1micro, reflagF1macro = self.evaluate_tr(clf, embedding, tr)
             self._add_rows(self.dataset, output, tr, reflagAcc, reflagF1micro, reflagF1macro)
