@@ -14,9 +14,6 @@ def main():
     parser.add_argument('--label', nargs='?', default=False, type=bool,
                         help=' If data is labelled')
 
-    parser.add_argument('--eval', nargs='?', default=False, type=bool,
-                        help=' If data is labelled')
-
     parser.add_argument('--num-walks', default=10, type=int,
                         help='Random walks per node')
 
@@ -35,7 +32,10 @@ def main():
 
 if __name__ == "__main__":
     args = main()
-    reflag_obj = REFLAG(args.data)
-    model = reflag_obj.train_REFLAG(args.data, args.label, args.num_walks, args.walk_length, args.dimension, args.window_size, args.output)
+    reflag = REFLAG(args.data)
+    model = reflag.train_REFLAG(args.data, args.label, args.num_walks, args.walk_length, args.dimension,
+                                args.window_size, args.output)
+
+    ''' for blogcatalog set multilabel = True'''
     c_eval = Classification(args.data, multilabel=False)
     c_eval.evaluate(model, args.label)

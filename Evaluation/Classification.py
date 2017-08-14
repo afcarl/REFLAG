@@ -10,6 +10,8 @@ from sklearn.model_selection import ShuffleSplit
 from sklearn import linear_model
 from sklearn import preprocessing
 
+''' This class performs multi-class/multi-label classification tasks'''
+
 class Classification:
 
     def __init__(self, dataset, multilabel=False):
