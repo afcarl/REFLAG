@@ -24,7 +24,7 @@ class Classification:
         else:
             self.labels = self.getLabels()
 
-    """ returns the embeddings """
+    """ returns the embeddings read from file fname"""
     def get_embeddingDF(self, fname):
         df = pd.read_csv(fname, header=None, skiprows=1, delimiter=' ')
         df.sort_values(by=[0], inplace=True)
@@ -32,6 +32,7 @@ class Classification:
         df = df.set_index(0)
         return df.as_matrix(columns=df.columns[0:])
 
+    ''' returns list of labels ordered by the node id's '''
     def getLabels(self):
         lblmap = {}
         fname = self.dataset_dir+'labels_maped.txt'
@@ -45,6 +46,7 @@ class Classification:
         labels = [lblmap[vid] for vid in node_list]
         return np.array(labels)
 
+    ''' returns the multibinarized object for multilabel datasets'''
     def getMultiLabels(self,delim='\t'):
         lblmap = {}
         fname = self.dataset_dir + 'labels_maped.txt'
@@ -60,18 +62,23 @@ class Classification:
         labels = [lblmap[vid] for vid in nlist]
         return self.binarizelabels(labels)
 
+    ''' returns the multilabelbinarizer object'''
     def binarizelabels(self, labels, nclasses=None):
         if nclasses == None:
             mlb = preprocessing.MultiLabelBinarizer()
             return mlb.fit_transform(labels)
+        # for fit_and_predict to return binarized object of predicted classes
         mlb = preprocessing.MultiLabelBinarizer(classes=range(nclasses))
         return mlb.fit_transform(labels)
 
+    ''' returns the classifier'''
     def getclassifier(self):
         log_reg = linear_model.LogisticRegression(n_jobs=8)
         ors = OneVsRestClassifier(log_reg)
         return ors
 
+    ''' predicts and returns the top k labels for multi-label classification
+    k depends on the number of labels in y_test'''
     def fit_and_predict_multilabel(self, clf, X_train, X_test, y_train, y_test):
         clf.fit(X_train, y_train)
         y_pred_probs = clf.predict_proba(X_test)
@@ -90,7 +97,7 @@ class Classification:
         if self.multi_label:
             return self.fit_and_predict_multilabel(clf, X_train, X_test, Y_train)
         else:
-            clf.fit(X_train, Y_train)
+            clf.fit(X_train, Y_train) #for multi-class classification
             return clf.predict(X_test)
 
     def _get_accuracy(self, tlabels, plabels):
@@ -99,7 +106,7 @@ class Classification:
     def _get_f1micro(self, tlabels, plabels):
         return f1_score(tlabels, plabels, average='micro')
 
-    def getF1macro(self,tlabels, plabels):
+    def getF1macro(self, tlabels, plabels):
         return f1_score(tlabels, plabels, average='macro')
 
     def _add_rows(self, data, output, tr, acc, f1micro, f1macro):
@@ -109,7 +116,7 @@ class Classification:
         output["f1micro"].append(np.mean(np.array(f1micro)))
         output["f1macro"].append(np.mean(np.array(f1macro)))
 
-
+    ''' evaluates an embedding for classification on training ration of tr'''
     def evaluate_tr(self, clf, embedding ,tr):
         num_nodes = self.labels.size
         ss = ShuffleSplit(n_splits=10, train_size=tr, random_state=2)
@@ -138,7 +145,7 @@ class Classification:
                 embedding = self.get_embeddingDF(model)
 
         clf = self.getclassifier()
-        TR = [0.1, 0.3, 0.5]
+        TR = [0.1, 0.3, 0.5] # the training ratio for classifier
         for tr in TR:
             print "TR ... ", tr
             if label == True:

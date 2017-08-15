@@ -10,7 +10,8 @@ import random
 p = psutil.Process(os.getpid())
 
 '''
-REFLAG learns an embedding jointly from structural contexts and attribute contexts.
+REFLAG learns an embedding jointly from structural contexts and attribute contexts
+employing a single layer of neural network.
 '''
 
 
@@ -81,8 +82,8 @@ class REFLAG(object):
             reflag_model = self._train_word2Vec(walks, dsize, wsize, 8, output, fname)
         return reflag_model
 
-    ''' Trains on labelled dataset, i.e class labels are used as an attribute '''
 
+    ''' Trains on labelled dataset, i.e class labels are used as an attribute '''
 
     def train_labelled_reflag(self, data, walks_structure, num_str_nodes, nwalks, wlength, dsize, wsize, output,
                               evaluate=True):
