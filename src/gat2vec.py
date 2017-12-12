@@ -15,7 +15,7 @@ employing a single layer of neural network.
 '''
 
 
-class REFLAG(object):
+class gat2vec(object):
     def __init__(self, dataset):
         print "Initializing reflag"
         self.dataset = dataset
@@ -67,7 +67,7 @@ class REFLAG(object):
         return model
 
 
-    def train_REFLAG(self, data, label, nwalks, wlength, dsize, wsize, output):
+    def train_gat2vec(self, data, label, nwalks, wlength, dsize, wsize, output):
         print "Random Walks on Structural Graph"
         walks_structure, num_str_nodes = self._get_random_walks(nwalks, wlength)
         if label:

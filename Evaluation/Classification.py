@@ -117,23 +117,23 @@ class Classification:
         output["f1macro"].append(np.mean(np.array(f1macro)))
 
     ''' evaluates an embedding for classification on training ration of tr'''
-    def evaluate_tr(self, clf, embedding ,tr):
+    def evaluate_tr(self, clf, embedding, tr):
         num_nodes = self.labels.size
         ss = ShuffleSplit(n_splits=10, train_size=tr, random_state=2)
-        reflagAcc = []
-        reflagF1macro = []
-        reflagF1micro = []
+        gat2vecAcc = []
+        gat2vecF1macro = []
+        gat2vecF1micro = []
         for train_idx, test_idx in ss.split(self.labels):
             X_train, X_test, Y_train, Y_test = embedding[train_idx], embedding[test_idx], \
                                                self.labels[train_idx], self.labels[test_idx]
             pred = self.getPredictions(clf, X_train, X_test, Y_train)
-            reflagAcc.append(self._get_accuracy(Y_test, pred))
-            reflagF1micro.append(self._get_f1micro(Y_test, pred))
-            reflagF1macro.append(self.getF1macro(Y_test, pred))
+            gat2vecAcc.append(self._get_accuracy(Y_test, pred))
+            gat2vecF1micro.append(self._get_f1micro(Y_test, pred))
+            gat2vecF1macro.append(self.getF1macro(Y_test, pred))
 
-        # self.addRows(self.dataset, self.output, tr, reflagAcc, reflagF1micro, reflagF1macro)
+        # self.addRows(self.dataset, self.output, tr, gat2vecAcc, gat2vecF1micro, gat2vecF1macro)
         # outDf = pd.DataFrame(self.output)
-        return reflagAcc, reflagF1micro, reflagF1macro
+        return gat2vecAcc, gat2vecF1micro, gat2vecF1macro
 
     def evaluate(self, model, label = False):
         output = {"DATASET": [], "TR": [], "accuracy": [], "f1micro": [], "f1macro":[]}
@@ -149,17 +149,14 @@ class Classification:
         for tr in TR:
             print "TR ... ", tr
             if label == True:
-                model = "./embeddings/" + self.dataset + "_reflag_label_" + str(int(tr * 100)) + ".emb"
+                model = "./embeddings/" + self.dataset + "_gat2vec_label_" + str(int(tr * 100)) + ".emb"
                 if isinstance(model, str):
                     embedding = self.get_embeddingDF(model)
 
-            reflagAcc, reflagF1micro, reflagF1macro = self.evaluate_tr(clf, embedding, tr)
-            self._add_rows(self.dataset, output, tr, reflagAcc, reflagF1micro, reflagF1macro)
+            gat2vecAcc, gat2vecF1micro, gat2vecF1macro = self.evaluate_tr(clf, embedding, tr)
+            self._add_rows(self.dataset, output, tr, gat2vecAcc, gat2vecF1micro, gat2vecF1macro)
         print "SVC Training Finished"
 
         print "results"
         outDf = pd.DataFrame(output)
         print outDf
-
-# c_eval = Classification('M10', multilabel=False)
-# c_eval.evaluate('embeddings/M10_reflag.emb')

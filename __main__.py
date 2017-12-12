@@ -1,10 +1,10 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-from src.Reflag import REFLAG
+from src.gat2vec import gat2vec
 from Evaluation.Classification import Classification
 
 
 def main():
-    parser = ArgumentParser("REFLAG",
+    parser = ArgumentParser("gat2vec",
                             formatter_class=ArgumentDefaultsHelpFormatter,
                             conflict_handler='resolve')
 
@@ -32,9 +32,9 @@ def main():
 
 if __name__ == "__main__":
     args = main()
-    reflag = REFLAG(args.data)
-    model = reflag.train_REFLAG(args.data, args.label, args.num_walks, args.walk_length, args.dimension,
-                                args.window_size, args.output)
+    g2v = gat2vec(args.data)
+    model = g2v.train_gat2vec(args.data, args.label, args.num_walks, args.walk_length, args.dimension,
+                                 args.window_size, args.output)
 
     ''' for blogcatalog set multilabel = True'''
     c_eval = Classification(args.data, multilabel=False)
